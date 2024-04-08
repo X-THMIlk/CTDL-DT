@@ -1,0 +1,26 @@
++#include<bits/stdc++.h>
+using namespace std;
+ void search(int a[], int n,int k){
+ 	int i=0;
+ 	while ( i<n&& a[i]!=k){
+ 		i++;
+	 }
+	 if (i<n){
+	 	cout<<"\nSo nguyen "<<k<<" \nTai vi tri "<<i<<endl;
+	 }
+	 else
+	 {
+	 	cout<<"Khong ton tai trong day";
+	 }
+ }
+ main(){
+ 	int a[100]={34,14,24,54,84,94,74,04};
+ 	int k1,k2;
+ 	int n=9;
+	cout<<"\Nhap so nguyen can tim kiem K1: ";
+	cin>>k1;
+	search(a,n,k1);
+	cout<<"\Nhap so nguyen can tim kiem K2: ";
+	cin>>k2;
+	search(a,n,k2);
+ }
