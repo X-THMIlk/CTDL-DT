@@ -1,0 +1,210 @@
+#include<bits/stdc++.h>
+using namespace std;
+struct SV{
+ char masv[100];
+ char hodem[100];
+ char ten[100];
+ int namsinh;
+ float diemtk;
+};
+struct Node{
+ SV infor;
+ Node *next;
+};
+typedef Node *TRO;
+void creat(TRO &L){
+ L = NULL;
+}
+int Empty(TRO L){
+ return L == NULL;
+}
+void NhapSV(SV &sv){
+ cout<<"\tNhap ma sv: ";fflush(stdin);
+ gets(sv.masv);
+ if(strcmp(sv.masv,"***")==0){
+  return;
+ }
+ cout<<"\tNhap ho dem sv: ";fflush(stdin);
+ gets(sv.hodem);
+ cout<<"\tNhap ten sv: ";fflush(stdin);
+ gets(sv.ten);
+ cout<<"\tNhap nam sinh: ";
+ cin>>sv.namsinh;
+ cout<<"\tNhap diem tk: ";
+ cin>>sv.diemtk;
+}
+void NhapDS(TRO &L){
+ creat(L);
+ SV X;
+ TRO P,Q;
+ int i=1;
+ do{
+  cout<<"Nhap sv thu"<<i<<endl;
+  NhapSV(X);
+  if(strcmp(X.masv,"***")==0){
+  return;
+  }
+ P=new(Node);
+ P->infor =X;
+ Q->next =NULL;
+ if (L==NULL){
+  L=P;
+ }
+ else{
+  Q->next=P;
+ }
+ Q=P;
+ i++;
+ }while(1);
+}
+void HienthiDS(TRO L){
+ if (L==NULL){
+  cout<<"Danh sach rong\n";
+  return;
+ }
+ cout<<setw(5)<<"STT";
+ cout<<setw(10)<<"Ma SV";
+ cout<<setw(25)<<"Ho va Ten";
+ cout<<setw(10)<<"Nam sinh";
+ cout<<setw(10)<<"Diem TK";
+ TRO Q=L;
+ int i=0;
+ while(Q!=NULL){
+  SV X=Q->infor;
+      cout<<setw(5)<<(1+i);
+  cout<<setw(10)<<X.masv;
+   cout<<setw(5)<<X.hodem;
+   cout<<setw(5)<<X.ten;
+   cout<<setw(5)<<X.namsinh;
+   cout<<setw(5)<<X.diemtk;
+  Q=Q->next;
+ }
+}
+int len(TRO L){
+ int n=0;
+ TRO Q=L;
+ while(Q!=NULL){
+  Q=Q->next;
+  n++;
+ }
+ return n;
+}
+void XoaSVdautien(TRO &L){
+ if (L!=NULL){
+  TRO Q=L;
+  L=L->next;
+  delete Q;
+  cout<<"Danh sach sau khi xoa SV dau: ";
+  HienthiDS(L);
+  return;
+ }
+ cout<<"Danh sach rong,khong xoa dc";
+}
+TRO Search(TRO L, char *ma){
+ TRO Q=L;
+ while(Q!=NULL&&strcmp(Q->infor.masv,ma)!=0){
+  Q=Q->next;
+ }
+ return Q;
+}
+void remove(TRO&L, TRO T){
+ TRO Q;
+ if (T==L){
+  L=T->next;
+ }
+ else{
+  Q=L;
+  while(Q->next!=T){
+   Q=Q->next;
+  }
+  Q->next=T->next;
+ }
+ delete T;
+}
+void xoasvT(TRO&L){
+ TRO T=Search(L,"sv0889");
+ if (T==NULL){
+  cout<<"Khong co sv0889";
+  return;
+ }
+ remove(L,T);
+ cout<<"Danh sach sau xoa: "<<endl;
+ HienthiDS(L);
+}
+void firstadd(TRO&L,SV X){
+ TRO P;
+ P=new(Node);
+ P->infor=X;
+ P->next=L;
+ L=P;
+}
+void insert(TRO&L ,TRO Q ,SV x){
+ TRO P;
+ P=new(Node);
+ P->infor=x;
+ P->next=Q->next;
+ Q->next=P;
+} 
+void insertt(TRO&L){
+ int k;
+ SV x;
+ do {
+  cout<<"Nhap vt can bosung 0<k<"<<len(L)<<": ";
+  cin>>k;
+ }while(k<1||k>len(L));
+ do{
+  NhapSV(x);
+  if (strcmp(x.masv,"***")==0){
+   cout<<"Ma sv phai khac *** ,Nhap lai"<<endl;
+  }
+ }while(strcmp(x.masv,"***")==0);
+ if (k=1){
+  firstadd(L,x);
+ }
+ else{
+  TRO Q=L;
+  int d=1;
+  while(d<k-1){
+   d++;
+   Q=Q->next;
+  }
+  insert(L,Q,x);
+ }
+ cout<<"DS sau insert: ";
+ HienthiDS(L);
+}
+void sortdiemtk(TRO&L){
+ TRO Q,P,R;
+ P=L;
+ while(P->next!=NULL){
+  R=P;
+  Q=P->next;
+  while(Q->next!=NULL){
+   if(Q->infor.diemtk>R->infor.diemtk){
+    R=Q;
+   }
+   Q=Q->next;
+  }
+  SV tg=P->infor;
+  P->infor=R->infor;
+  R->infor=tg;
+  P=P->next;
+ }
+ cout<<"Danh sach giam dan diem tk";
+ HienthiDS(L);
+}
+main(){
+ TRO L;
+ cout<<"Nhap DS";
+ NhapDS(L);
+cout<<"Hien DS";
+ HienthiDS(L);
+ cout<<"CD cua DS";
+ len(L);
+ cout<<"XOA sv dt";
+ XoaSVdautien(L);
+ cout<<"BOsung";
+ insertt(L);
+ cout<<"sap XEP";
+ sortdiemtk(L);
+}
