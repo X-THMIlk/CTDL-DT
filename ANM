@@ -1,0 +1,104 @@
+Euclid
+#include<bits/stdc++.h>
+using namespace std;
+main(){
+	int a,b;
+	int q,r,d,c,x,y;
+	int x1,x2,y1,y2;
+	cout<<"Nhap 2 so nguyen a va sao cho a>=b "<<endl;
+	while(a<b){
+		cout<<"Nhap so nguyen a ";
+		cin>>a;
+		cout<<"Nhap so nguyen b ";
+		cin>>b;
+	}
+	d=a;
+	c=b;
+	if (b==0){
+		cout<<"gcd("<<a<<","<<b<<")= "<<a;
+		cout<<a<<"* 1"<<b<<"* 0"<<" = "<<a;
+		return 0;
+	}
+	x1=0;x2=1;y1=1;y2=0;
+	while(b>0){
+		q=a/b;
+		r=a%b;
+		x=x2-q*x1;
+		y=y2-q*y1;
+		a=b;
+		b=r;
+		x2=x1;
+		x1=x;
+		y2=y1;
+		y1=y;
+	}
+	x=x2;
+	y=y2;
+	cout<<"gcd("<<d<<","<<c<<")= "<<a<<endl;
+	cout<<d<<"*"<<x<<"+"<<c<<"*"<<y<<" = "<<a;
+}
+so_nghich dao
+#include<bits/stdc++.h>
+using namespace std;
+main(){
+	int a,b;
+	int r0,r1,r2;
+	int q,t0,t1;
+	cout<<"Nhap n va a sao cho a thuoc Zn"<<endl;
+	do{
+		cout<<"Nhap n ";
+		cin>>a;
+		cout<<"Nhap a ";
+		cin>>b;
+	}while(a<b);
+	r0=a;
+	r1=b;
+	t0=0;
+	t1=1;
+	while(r0%r1!=0){
+		r2=r0%r1;
+		q=r0/r1;
+		t1=(t0-q*t1);
+		if(t1>a){
+			t1=t1%a;
+		}
+		else{
+			t1=t1+a;
+		}
+		r0=r1;
+		r1=r2;
+		t0=t1;
+	}
+	if (r1==1){
+		cout<<t1;
+	}
+	else {
+		cout<<"kh";
+	}
+}
+luy thua
+#include<iostream>
+using namespace std;
+
+int powmod(int a, int b, int n) {
+    int result = 1;
+    a %= n;
+    while (b > 0) {
+        if (b % 2 == 1)
+            result = (result * a) % n;
+        a = (a * a) % n;
+        b = b / 2;
+    }
+    return result;
+}
+
+int main() {
+    int a, b, n;
+    cout << "Nhap a: ";       cin >> a;
+    cout << "Nhap b: ";       cin >> b;
+    cout << "Nhap n: ";       cin >> n;
+
+    cout << a << " ^ " << b << " mod " << n << " = " << powmod(a, b, n) << endl;
+
+	return 0;
+}
