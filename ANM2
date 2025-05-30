@@ -1,0 +1,161 @@
+ELgamal
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+
+using namespace std;
+
+// Hàm tính lũy thừa mô-đun nhanh
+long long modPow(long long base, long long exp, long long mod) {
+    long long result = 1;
+    base %= mod;
+    while (exp > 0) {
+        if (exp & 1) result = (result * base) % mod;
+        base = (base * base) % mod;
+        exp >>= 1;
+    }
+    return result;
+}
+
+// Hàm mã hóa Elgamal
+void encrypt(long long p, long long g, long long y, long long m) {
+    long long k;
+    cout << "Nhap k (0 < k < q): ";
+    cin >> k;
+    
+    // Tính c1 = g^k mod p
+    long long c1 = modPow(g, k, p);
+    
+    // Tính c2 = m * y^k mod p
+    long long c2 = (m * modPow(y, k, p)) % p;
+    
+    cout << "Ban ma: [c1, c2] = [" << c1 << ", " << c2 << "]" << endl;
+}
+
+// Hàm giải mã Elgamal
+void decrypt(long long p, long long x, long long c1, long long c2) {
+    // Tính m = c2 * (c1^(p-1-x) mod p) mod p
+    long long m = (c2 * modPow(c1, p-1-x, p)) % p;
+    cout << "Tin nhan giai ma: " << m << endl;
+}
+
+int main() {
+    long long p, g, x, y, m;
+    
+    // Nhập p (số nguyên tố), g (bộ sinh), x (khóa riêng)
+    cout << "Nhap p: ";
+    cin >> p;
+    cout << "Nhap a: ";
+    cin >> g;
+    cout << "Nhap x (khoa rieng): ";
+    cin >> x;
+    
+    // Tính y = g^x mod p
+    y = modPow(g, x, p);
+    cout << "Khoa cong khai y = " << y << endl;
+    
+    // Mã hóa
+    cout << "Nhap tin nhan m: ";
+    cin >> m;
+    encrypt(p, g, y, m);
+    
+    // Giải mã (ví dụ)
+    long long c1, c2;
+    cout << "Nhap c1, c2 de giai ma: ";
+    cin >> c1 >> c2;
+    decrypt(p, x, c1, c2);
+    
+    return 0;
+}
+RSA
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+
+using namespace std;
+
+// Hàm tính ước chung lớn nhất (GCD)
+long long gcd(long long a, long long b) {
+    if (b == 0) return a;
+    return gcd(b, a % b);
+}
+
+// Hàm tính lũy thừa mô-đun nhanh
+long long modPow(long long base, long long exp, long long mod) {
+    long long result = 1;
+    base %= mod;
+    while (exp > 0) {
+        if (exp & 1) result = (result * base) % mod;
+        base = (base * base) % mod;
+        exp >>= 1;
+    }
+    return result;
+}
+
+// Tạo khóa RSA
+void generateKeys(long long p, long long q, long long& n, long long& e, long long& d) {
+    // Tính n = p * q
+    n = p * q;
+    
+    // Tính φ(n) = (p-1)(q-1)
+    long long phi = (p - 1) * (q - 1);
+    
+    // Chọn e sao cho 1 < e < φ(n) và gcd(e, φ(n)) = 1
+    for (e = 2; e < phi; e++) {
+        if (gcd(e, phi) == 1) break;
+    }
+    
+    // Tính d sao cho e * d ≡ 1 (mod φ(n))
+    long long k = 2;
+    while (true) {
+        if ((k * phi + 1) % e == 0) {
+            d = (k * phi + 1) / e;
+            break;
+        }
+        k++;
+    }
+    
+    cout << "Khoa cong khai: (e, n) = (" << e << ", " << n << ")" << endl;
+    cout << "Khoa rieng: (d, n) = (" << d << ", " << n << ")" << endl;
+}
+
+// Mã hóa
+long long encrypt(long long m, long long e, long long n) {
+    if (m < 0 || m >= n) {
+        cout << "Tin nhan m phai nam trong khoang 0 <= m < n" << endl;
+        return -1;
+    }
+    return modPow(m, e, n);
+}
+
+// Giải mã
+long long decrypt(long long c, long long d, long long n) {
+    return modPow(c, d, n);
+}
+
+int main() {
+    long long p, q, n, e, d, m, c;
+    
+    // Nhập hai số nguyên tố p và q
+    cout << "Nhap p (so nguyen to): ";
+    cin >> p;
+    cout << "Nhap q (so nguyen to): ";
+    cin >> q;
+    
+    // Tạo khóa
+    generateKeys(p, q, n, e, d);
+    
+    // Mã hóa
+    cout << "Nhap tin nhan m: ";
+    cin >> m;
+    c = encrypt(m, e, n);
+    if (c != -1) {
+        cout << "Ban ma C = " << c << endl;
+    }
+    
+    // Giải mã
+    long long decrypted = decrypt(c, d, n);
+    cout << "Tin nhan giai ma M = " << decrypted << endl;
+    
+    return 0;
+}
